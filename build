@@ -1,0 +1,18 @@
+#!/bin/sh
+
+cp -fp $PWD/build* i386/
+cp -fp $PWD/build* x86_64/
+cp -fp $PWD/build* mingw/
+
+docker build -t sqlite3-ruby:i386 i386/
+docker build -t sqlite3-ruby:x86_64 x86_64/
+docker build -t sqlite3-ruby:mingw mingw/
+
+mkdir -p $PWD/sqlite
+
+# Build msgpack-ruby
+docker run -v $PWD/msgpack:/build:rw sqlite3-ruby:i386   /build_msgpack-ruby i386   /build
+docker run -v $PWD/msgpack:/build:rw sqlite3-ruby:x86_64 /build_msgpack-ruby x86_64 /build
+docker run -v $PWD/msgpack:/build:rw sqlite3-ruby:mingw  /build_msgpack-ruby i386-mingw32 /build
+docker run -v $PWD/msgpack:/build:rw sqlite3-ruby:mingw  /build_msgpack-ruby x64-mingw32 /build
+
